@@ -1,0 +1,143 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SonoLit — Custom Styles
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+body {
+  background-color: #0a0a1a;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* ── Dot Grid Background ──────────────────────────────────────────────────── */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(124, 58, 237, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* ── Glassmorphism Cards ──────────────────────────────────────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(124, 58, 237, 0.4);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.15);
+}
+
+/* ── Navbar Border (no top/left/right) ────────────────────────────────────── */
+.nav-border {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ── Gradient Text ────────────────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(to right, #7c3aed, #3b82f6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ── Gradient Button ──────────────────────────────────────────────────────── */
+.gradient-btn {
+  background: linear-gradient(to right, #7c3aed, #3b82f6);
+  transition: opacity 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+  border: none;
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.gradient-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.gradient-btn:active {
+  transform: scale(0.98);
+}
+
+.gradient-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Floating Particles ───────────────────────────────────────────────────── */
+.floating-particle {
+  position: absolute;
+  background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+/* ── Animations ───────────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+/* Wave bars — music visualizer */
+.wave-bar {
+  width: 4px;
+  height: 20px;
+  background: linear-gradient(to top, #7c3aed, #3b82f6);
+  border-radius: 2px;
+  margin: 0 2px;
+  animation: waveHeight 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes waveHeight {
+  from { height: 10px; }
+  to   { height: 60px; }
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection */
+::selection {
+  background: rgba(124, 58, 237, 0.4);
+  color: #fff;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 58, 237, 0.4);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 58, 237, 0.6);
+}

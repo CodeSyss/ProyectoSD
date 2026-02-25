@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# Landing — datos de usuarios
+landing/usuarios.csv
+
+# IDE
+.vscode/
+.idea/

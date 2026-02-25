@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SonoLit — Transforma la Literatura en Música</title>
+  <meta name="description"
+    content="Plataforma de sonorización de estructuras literarias mediante un sistema distribuido. Convierte obras literarias en composiciones musicales únicas." />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#0a0a1a',
+              violet: '#7c3aed',
+              blue: '#3b82f6',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}" />
+</head>
+
+<body class="font-sans antialiased">
+
+  <!-- Background Effects -->
+  <div class="fixed inset-0 dot-grid -z-10"></div>
+  <div class="fixed inset-0 pointer-events-none -z-10" id="particle-container"></div>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 glass-card nav-border" id="main-nav">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="#" class="text-2xl font-extrabold flex items-center gap-2">
+        <span class="text-brand-violet">♪</span>
+        <span>SonoLit</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm font-medium text-white/70">
+        <a class="hover:text-white transition-colors" href="#features">Características</a>
+        <a class="hover:text-white transition-colors" href="#how-it-works">Cómo Funciona</a>
+        <a class="gradient-btn px-5 py-2.5 rounded-full text-white" href="#register">Registrarse</a>
+      </div>
+      <!-- Mobile Menu Button -->
+      <button class="md:hidden text-white/70 hover:text-white" id="mobile-menu-btn" aria-label="Abrir menú">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M4 6h16M4 12h16m-7 6h7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+        </svg>
+      </button>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="hidden md:hidden border-t border-white/10 px-6 py-4 space-y-3" id="mobile-menu">
+      <a class="block text-white/70 hover:text-white transition-colors" href="#features">Características</a>
+      <a class="block text-white/70 hover:text-white transition-colors" href="#how-it-works">Cómo Funciona</a>
+      <a class="block gradient-btn px-5 py-2.5 rounded-full text-white text-center" href="#register">Registrarse</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="pt-40 pb-20 px-6 max-w-7xl mx-auto text-center relative overflow-hidden" id="hero">
+    <div class="reveal">
+      <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+        Transforma la <span class="gradient-text">Literatura</span><br />en Música
+      </h1>
+      <p class="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10">
+        Un sistema distribuido que convierte obras literarias clásicas en composiciones musicales únicas.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <a class="gradient-btn px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-brand-violet/20 w-full sm:w-auto text-center"
+          href="#register">
+          Comenzar ahora
+        </a>
+        <button
+          class="px-8 py-4 rounded-xl font-bold text-lg border border-white/10 hover:bg-white/5 w-full sm:w-auto transition-colors">
+          Ver demo
+        </button>
+      </div>
+      <!-- Musical Wave Visualizer -->
+      <div class="flex items-center justify-center gap-1 h-20 opacity-80" id="wave-visualizer">
+        <div class="wave-bar" style="animation-delay: 0.1s"></div>
+        <div class="wave-bar" style="animation-delay: 0.3s"></div>
+        <div class="wave-bar" style="animation-delay: 0.5s"></div>
+        <div class="wave-bar" style="animation-delay: 0.7s"></div>
+        <div class="wave-bar" style="animation-delay: 0.2s"></div>
+        <div class="wave-bar" style="animation-delay: 0.4s"></div>
+        <div class="wave-bar" style="animation-delay: 0.6s"></div>
+        <div class="wave-bar" style="animation-delay: 0.8s"></div>
+        <div class="wave-bar" style="animation-delay: 0.1s"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Features Section -->
+  <section class="py-24 px-6 max-w-7xl mx-auto" id="features">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Tecnología de Vanguardia</h2>
+      <div class="w-20 h-1 bg-brand-violet mx-auto"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Card 1 -->
+      <div class="glass-card p-8 rounded-2xl">
+        <div class="w-12 h-12 bg-brand-violet/20 rounded-lg flex items-center justify-center mb-6">
+          <span class="text-2xl">📖</span>
+        </div>
+        <h3 class="text-xl font-bold mb-4 text-brand-blue">Procesamiento de Texto</h3>
+        <p class="text-white/60">Tokenización y cuantificación de obras literarias clásicas mediante mapeo matemático de
+          valores ASCII ponderados (WPA).</p>
+      </div>
+      <!-- Card 2 -->
+      <div class="glass-card p-8 rounded-2xl">
+        <div class="w-12 h-12 bg-brand-violet/20 rounded-lg flex items-center justify-center mb-6">
+          <span class="text-2xl">🔗</span>
+        </div>
+        <h3 class="text-xl font-bold mb-4 text-brand-blue">Sistema Distribuido</h3>
+        <p class="text-white/60">Arquitectura Cliente-Servidor con sockets TCP/IP para el procesamiento paralelo de
+          múltiples corpus literarios en tiempo real.</p>
+      </div>
+      <!-- Card 3 -->
+      <div class="glass-card p-8 rounded-2xl">
+        <div class="w-12 h-12 bg-brand-violet/20 rounded-lg flex items-center justify-center mb-6">
+          <span class="text-2xl">🎵</span>
+        </div>
+        <h3 class="text-xl font-bold mb-4 text-brand-blue">Generación MIDI</h3>
+        <p class="text-white/60">Conversión de valores numéricos normalizados [0-127] a notas MIDI, generando la "firma
+          sonora" única de cada obra literaria.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="py-24 px-6 bg-brand-dark/50" id="how-it-works">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">El Proceso Creativo</h2>
+        <p class="text-white/50">Del papel al pentagrama en cuatro etapas tecnológicas.</p>
+      </div>
+      <div class="space-y-12 relative">
+        <!-- Vertical Line -->
+        <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-white/10 hidden md:block"></div>
+
+        <!-- Step 1 -->
+        <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
+          <div class="flex-1 md:text-right hidden md:block">
+            <h4 class="text-xl font-bold">Carga de Obra</h4>
+            <p class="text-white/50">Se introduce la literatura fuente.</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-full bg-brand-violet flex items-center justify-center font-bold shadow-lg shadow-brand-violet/50">
+            1</div>
+          <div class="flex-1">
+            <h4 class="text-xl font-bold md:hidden">Carga de Obra</h4>
+            <p class="text-brand-blue font-semibold">Texto</p>
+            <p class="text-white/50 md:hidden">Se introduce la literatura fuente.</p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
+          <div class="flex-1 order-2 md:order-1">
+            <h4 class="text-xl font-bold md:text-right md:hidden">Tokenización del Texto</h4>
+            <p class="text-brand-blue font-semibold md:text-right">Tokenización</p>
+            <p class="text-white/50 md:text-right md:hidden">Fragmentación por oraciones y extracción de palabras.</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-full bg-brand-violet flex items-center justify-center font-bold shadow-lg shadow-brand-violet/50 order-1 md:order-2">
+            2</div>
+          <div class="flex-1 order-3 hidden md:block">
+            <h4 class="text-xl font-bold">Tokenización del Texto</h4>
+            <p class="text-white/50">Fragmentación por oraciones y extracción de palabras.</p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
+          <div class="flex-1 md:text-right hidden md:block">
+            <h4 class="text-xl font-bold">Algoritmo Musical</h4>
+            <p class="text-white/50">Mapeo de palabras a valores numéricos ponderados.</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-full bg-brand-violet flex items-center justify-center font-bold shadow-lg shadow-brand-violet/50">
+            3</div>
+          <div class="flex-1">
+            <h4 class="text-xl font-bold md:hidden">Algoritmo Musical</h4>
+            <p class="text-brand-blue font-semibold">Cuantificación WPA</p>
+            <p class="text-white/50 md:hidden">Mapeo de palabras a valores numéricos ponderados.</p>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
+          <div class="flex-1 order-2 md:order-1">
+            <h4 class="text-xl font-bold md:text-right md:hidden">Compilación Final</h4>
+            <p class="text-brand-blue font-semibold md:text-right">Archivo MIDI</p>
+            <p class="text-white/50 md:text-right md:hidden">Generación del archivo musical final.</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-full bg-brand-violet flex items-center justify-center font-bold shadow-lg shadow-brand-violet/50 order-1 md:order-2">
+            4</div>
+          <div class="flex-1 order-3 hidden md:block">
+            <h4 class="text-xl font-bold">Compilación Final</h4>
+            <p class="text-white/50">Generación del archivo musical final.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Registration Section -->
+  <section class="py-24 px-6" id="register">
+    <div class="max-w-3xl mx-auto glass-card p-12 rounded-3xl text-center">
+      <h2 class="text-3xl font-bold mb-4">¿Listo para escuchar tus historias?</h2>
+      <p class="text-white/60 mb-10">Sé el primero en probar SonoLit cuando lancemos nuestra plataforma.</p>
+      <form class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto" id="registration-form">
+        <input
+          class="flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white placeholder-white/30 focus:outline-none focus:border-brand-violet transition-colors"
+          id="email-input" placeholder="tu@email.com" required type="email" />
+        <button class="gradient-btn px-8 py-4 rounded-xl font-bold whitespace-nowrap" type="submit" id="submit-btn">
+          Notificarme del Lanzamiento
+        </button>
+      </form>
+      <!-- Success Message -->
+      <div class="hidden mt-6 text-brand-blue font-medium animate-bounce" id="success-message">
+        ✨ ¡Suscripción exitosa! Te contactaremos pronto.
+      </div>
+      <!-- Error Message -->
+      <div class="hidden mt-6 text-red-400 font-medium" id="error-message"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 px-6 border-t border-white/5 text-center text-white/30 text-sm">
+    <div class="max-w-7xl mx-auto">
+      <p class="mb-2">UNIMET — Sistemas Distribuidos 2526-2</p>
+      <p>© 2026 SonoLit. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="{{ url_for('static', path='js/app.js') }}"></script>
+</body>
+
+</html>

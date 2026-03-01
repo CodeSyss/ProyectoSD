@@ -1,33 +1,28 @@
 import socket
 import threading
 import json
-import os
 import argparse
 from datetime import datetime
 
 from colorama import init, Fore, Style
 
-import csv
-
-from midi_writer import events_to_midi
-
 init(autoreset=True)
 
-# ── Configuración por defecto ───────────────────────────────────────────────
+# ── Configuración por defecto
 DEFAULT_HOST = "0.0.0.0"     
 DEFAULT_PORT = 9000
-OUTPUT_DIR   = "output"
 
-# Colores por node_id (se asignan en orden de conexión si no están en el mapa)
+# Colores por node_id 
 NODE_COLOR_MAP = {
     "quijote": Fore.CYAN,
     "cid":     Fore.YELLOW,
+    "monitor": Fore.MAGENTA, # Agregamos un color para el futuro monitor
 }
-FALLBACK_COLORS = [Fore.GREEN, Fore.MAGENTA, Fore.BLUE, Fore.WHITE]
+FALLBACK_COLORS = [Fore.GREEN, Fore.BLUE, Fore.WHITE]
 
-# ── Estado compartido ───────────────────────────────────────────────────────
+# ── Estado compartido 
 lock            = threading.Lock()
-node_events: dict[str, list[dict]] = {}
+clients: dict[str, socket.socket]  = {} # node_events por un mapa de clientes conectados
 node_colors: dict[str, str]        = {}
 color_counter                      = 0
 
@@ -79,69 +74,46 @@ def handle_client(conn: socket.socket, addr: tuple) -> None:
 
             mtype = msg.get("type")
 
-            # ── CONNECT ──────────────────────────────────────────────────
+            # ── CONNECT 
             if mtype == "connect":
-                node_id = msg["node_id"]
+                node_id = msg.get("node_id", "unknown")
                 color   = get_node_color(node_id)
+                
+                # Guardamos el socket del cliente para poder enrutarle mensajes luego
                 with lock:
-                    node_events[node_id] = []
+                    clients[node_id] = conn
+                    
                 log(
                     f"[{node_id.upper()}] Nodo conectado  |  corpus: {msg.get('corpus', '?')}",
                     color,
                 )
                 conn.send(json.dumps({"type": "ack", "status": "ok"}).encode() + b"\n")
 
-            # ── EVENT ────────────────────────────────────────────────────
-            elif mtype == "event":
-                node_id = msg["node_id"]
-                color   = get_node_color(node_id)
+            # ── ENRUTADOR DE MENSAJES (Reemplaza la lógica de negocio) ───
+            else:
+                target = msg.get("target") # Leemos a quién va dirigido el mensaje
+                
                 with lock:
-                    node_events.setdefault(node_id, []).append(msg)
-                log(
-                    f"[{node_id.upper()}]  oración:{msg['sentence_idx']:03d}"
-                    f"  palabra:'{msg['word']:<12}'"
-                    f"  raw:{msg['raw_value']:8.2f}"
-                    f"  MIDI:{msg['midi_value']:3d}",
-                    color,
-                )
-
-            # ── DONE ─────────────────────────────────────────────────────
-            elif mtype == "done":
-                node_id = msg["node_id"]
-                color   = get_node_color(node_id)
-                total   = msg.get("total_events", 0)
-                log(
-                    f"[{node_id.upper()}] Procesamiento completado  |  {total} eventos",
-                    color,
-                )
-                # Generar archivo MIDI
-                with lock:
-                    events = list(node_events.get(node_id, []))
-                if events:
-                    os.makedirs(OUTPUT_DIR, exist_ok=True)
-                    midi_path = os.path.join(OUTPUT_DIR, f"{node_id}.mid")
-                    events_to_midi(events, midi_path)
-                    log(f"[{node_id.upper()}] MIDI generado → {midi_path}", color)
-
-                    csv_path = os.path.join(OUTPUT_DIR, f"{node_id}.csv")
-                    with open(csv_path, "w", newline="", encoding="utf-8") as csvfile:
-                        writer = csv.DictWriter(
-                            csvfile,
-                            fieldnames=["sentence_idx", "word", "raw_value", "midi_value"],
-                        )
-                        writer.writeheader()
-                        for e in events:
-                            writer.writerow({
-                                "sentence_idx": e["sentence_idx"],
-                                "word":         e["word"],
-                                "raw_value":    e["raw_value"],
-                                "midi_value":   e["midi_value"],
-                            })
-                    log(f"[{node_id.upper()}] CSV  generado → {csv_path}", color)
+                    if target and target in clients:
+                        # Reenvío privado (ej. un procesador enviando un evento al monitor)
+                        clients[target].send((line + "\n").encode("utf-8"))
+                    else:
+                        # Broadcast: Si no hay un target específico, se reenvía a todos los demás
+                        for cid, c_conn in clients.items():
+                            if cid != node_id:
+                                try:
+                                    c_conn.send((line + "\n").encode("utf-8"))
+                                except:
+                                    pass
 
     except Exception as exc:
         log(f"Error en {addr}: {exc}", Fore.RED)
     finally:
+        # Limpiamos al cliente cuando se desconecta
+        if node_id:
+            with lock:
+                if node_id in clients:
+                    del clients[node_id]
         conn.close()
         label = node_id.upper() if node_id else str(addr)
         log(f"[{label}] Conexión cerrada", Fore.RED)
@@ -154,11 +126,9 @@ def main() -> None:
     args = parser.parse_args()
 
     print(f"\n{Fore.MAGENTA}{'═' * 60}")
-    print("   MIDI-SOCKETS  —  Nodo Central (Monitor/Servidor)")
+    print("   MIDI-SOCKETS  —  Nodo Central (Enrutador Puro)")
     print("   Sistemas Distribuidos 2526-2  |  UNIMET")
     print(f"{'═' * 60}{Style.RESET_ALL}\n")
-
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as srv:
         srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

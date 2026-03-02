@@ -26,13 +26,13 @@ def main() -> None:
                         help="Delay entre eventos en segundos (default: 0.05)")
     args = parser.parse_args()
 
-    # ── Banner ───────────────────────────────────────────────────────────────
+    # ── Banner 
     print(f"\n{Fore.CYAN}{'═' * 60}")
     print(f"   MIDI-SOCKETS  —  Nodo: {args.node_id.upper()}")
     print(f"   Corpus: {args.corpus}")
     print(f"{'═' * 60}{Style.RESET_ALL}\n")
 
-    # ── Cargar corpus ────────────────────────────────────────────────────────
+    # ── Cargar corpus 
     if not os.path.exists(args.corpus):
         print(f"{Fore.RED}✖  No se encontró el archivo: {args.corpus}{Style.RESET_ALL}")
         return
@@ -43,7 +43,7 @@ def main() -> None:
     sentences = tokenize_sentences(text)
     print(f"{Fore.GREEN}✔  Corpus cargado: {len(sentences)} oraciones{Style.RESET_ALL}\n")
 
-    # ── Conectar al servidor ─────────────────────────────────────────────────
+    # ── Conectar al servidor
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         try:
             sock.connect((args.host, args.port))
@@ -71,6 +71,7 @@ def main() -> None:
             for word, raw_val, midi_val in word_events:
                 event = {
                     "type":         "event",
+                    "target":       "monitor", # <--- Redireccion a monitor
                     "node_id":      args.node_id,
                     "sentence_idx": s_idx,
                     "word":         word,
@@ -92,6 +93,7 @@ def main() -> None:
         # Señal de fin
         send_msg(sock, {
             "type":         "done",
+            "target":       "monitor", # <--- Redireccion a monitor
             "node_id":      args.node_id,
             "total_events": total_events,
         })

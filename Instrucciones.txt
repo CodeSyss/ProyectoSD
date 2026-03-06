@@ -1,0 +1,14 @@
+------------ORDEN DE ENCENDIDO-----------
+
+Terminal 1 (Servidor): python server.py
+
+Terminal 2 (Monitor): python monitor.py
+
+Terminal 3 (Cliente Quijote): python client.py --node-id quijote
+
+Terminal 4 (Cliente Cid): python client.py --node-id cid
+
+
+------------1- Luego de ejecutar cada terminal, nos dirigimso al Terminal 2, Escribimos "iniciar" y ENTER----------
+
+      ------------2-Revisar Terminal 3 y 4 para ver la ejecución de cada nodo  ------------------------------------

@@ -1,3 +1,5 @@
+import mido
+import time
 import socket
 import json
 import os
@@ -84,6 +86,16 @@ def main() -> None:
         # el hilo inicia para leer el input del usuario
         threading.Thread(target=input_thread, args=(sock,), daemon=True).start()
 
+    # Inicializar puerto MIDI para tiempo real
+        try:
+            # En Windows suele llamarse así. Si falla, el except te dirá cómo se llama el tuyo.
+            midi_out = mido.open_output('Microsoft GS Wavetable Synth 0')
+            log("🎵 Sintetizador MIDI en tiempo real activado.", Fore.GREEN)
+        except Exception as e:
+            midi_out = None
+            puertos_disponibles = mido.get_output_names()
+            log(f"⚠️ Falló el audio. Puertos detectados: {puertos_disponibles}", Fore.YELLOW)
+
         log("Esperando eventos de los nodos de procesamiento...", Fore.CYAN)
 
         # 2. Escucha de eventos
@@ -107,6 +119,23 @@ def main() -> None:
                         f"  palabra:'{msg['word']:<12}'  raw:{msg['raw_value']:8.2f}  MIDI:{msg['midi_value']:3d}",
                         Fore.YELLOW
                     )
+                
+                # --- REPRODUCCIÓN EN TIEMPO REAL ---
+                    if midi_out:
+                        midi_val = int(msg['midi_value'])
+                        note = int(midi_val * 0.5 + 36)
+                        velocity = max(40, min(127, midi_val + 30))
+                        
+                        # Encender la nota
+                        midi_out.send(mido.Message('note_on', note=note, velocity=velocity))
+                        
+                        # Apagar la nota un instante después usando un hilo rápido para no bloquear la red
+                        def note_off(n):
+                            time.sleep(0.2)
+                            if midi_out:
+                                midi_out.send(mido.Message('note_off', note=n, velocity=0))
+                        threading.Thread(target=note_off, args=(note,), daemon=True).start()
+                    # -----------------------------------
 
                 elif mtype == "done":
                     sender_id = msg.get("node_id")
